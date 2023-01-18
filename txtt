@@ -1,0 +1,92 @@
+#კლასიფიკაცია 1
+import pandas as pd
+from sklearn.feature_selection import SelectPercentile, f_classif
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+
+data = pd.read_csv("C:\Program Files\JetBrains\PyCharm 2022.3\Rainl.csv")
+
+y = data['RainTomorrow']
+X = data.drop('RainTomorrow', axis=1)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)
+gauss = GaussianNB(priors=[0.4,0.6])
+gauss.fit(X_test, y_test)
+print(gauss.score(X_test, y_test))
+
+select = SelectPercentile(score_func=f_classif ,percentile=25)
+X_selected = select.fit_transform(X ,y)
+print(select.get_feature_names_out())
+
+
+
+
+#რეგრესია
+
+import numpy as np
+import pandas as pd
+import pandas as pd
+from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, QuantileTransformer, MinMaxScaler
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.feature_selection import SelectPercentile, f_classif
+from sklearn.preprocessing import MinMaxScaler as mms, RobustScaler as rs
+from sklearn.linear_model import ElasticNet
+from sklearn.datasets import make_regression
+
+
+
+
+data = pd.read_csv(r"C:\Program Files\JetBrains\PyCharm 2022.3\regression.csv")
+data.dropna(inplace=True)
+print(data.head())
+
+y = data['y'].values
+X = data.drop('y', axis=1).values
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=1)
+pipe = Pipeline(steps=[('scaler', StandardScaler()),('pca', PCA(n_components=1)),('cart', LinearRegression())])
+pipe.fit(X_train, y_train)
+
+print(pipe.score(X_train, y_train))
+print(pipe.score(X_test, y_test))
+
+scalar = rs()
+x_train = scalar.fit_transform(X_train)
+x_test = scalar.transform(X_test)
+
+
+X, y = make_regression(n_features=2, random_state=0)
+regr = ElasticNet(random_state=0)
+regr.fit(X, y)
+ElasticNet(randomstate=0)
+print(regr.coef)
+print(regr.intercept_)
+print(regr.predict([[0, 0]]))
+
+
+
+
+#კლასტერინგი
+
+from sklearn.cluster import KMeans
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
+
+data = pd.read_csv("https://gist.githubusercontent.com/tijptjik/9408623/raw/b237fa5848349a14a14e5d4107dc7897c21951f5/wine.csv%22)
+# print(data.head)
+data = data[["Alcohol","Wine","Proline"]]
+# print(data.head())
+plt.scatter(data["Alcohol"], data["Wine"], data["Proline"])
+myCluster = KMeans(n_clusters=3)
+myCluster.fit(data)
+y_predicted = myCluster.predict(data)
+plt.scatter(data["Alcohol"], data["Wine"],data["Proline"], c=y_predicted)
+plt.show()
+
+print(silhouette_score(data, y_predicted))
